@@ -50,6 +50,26 @@ CREATE TABLE IF NOT EXISTS inventory (
     UNIQUE (store_id, medicine_id)
 );
 
+CREATE TABLE IF NOT EXISTS ocr_scans (
+    id         BIGSERIAL PRIMARY KEY,
+    user_id    BIGINT REFERENCES users(id) ON DELETE SET NULL,
+    image_url  VARCHAR(500),
+    raw_text   TEXT,
+    status     VARCHAR(50) NOT NULL DEFAULT 'COMPLETED',
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS ocr_medicines (
+    id             BIGSERIAL PRIMARY KEY,
+    ocr_scan_id    BIGINT NOT NULL REFERENCES ocr_scans(id) ON DELETE CASCADE,
+    medicine_id    BIGINT REFERENCES medicines(medicine_id) ON DELETE SET NULL,
+    extracted_text VARCHAR(255) NOT NULL,
+    generic_name   VARCHAR(255),
+    strength       VARCHAR(100),
+    match_score    DOUBLE PRECISION NOT NULL,
+    match_status   VARCHAR(50) NOT NULL
+);
+
 -- ================================================================
 --  Performance Indexes
 --  (Hibernate @Index creates B-tree indexes on startup;

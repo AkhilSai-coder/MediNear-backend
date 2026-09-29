@@ -68,6 +68,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/ai/**").permitAll()
                 // ── Maps / Route (public) ─────────────────────────
                 .requestMatchers("/api/maps/**").permitAll()
+                // ── Prescription OCR Scan (public entry with optional JWT) ───
+                .requestMatchers("/api/ocr/scan").permitAll()
+                // ── Uploaded Images (public) ──────────────────────
+                .requestMatchers("/uploads/**").permitAll()
                 // ── WebSocket handshake (public) ──────────────────
                 .requestMatchers("/ws/**").permitAll()
                 // ── Everything else requires JWT ──────────────────
@@ -83,7 +87,8 @@ public class SecurityConfig {
         CorsConfiguration cfg = new CorsConfiguration();
         cfg.setAllowedOriginPatterns(List.of("*"));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setExposedHeaders(List.of("Authorization", "Content-Disposition"));
         cfg.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
